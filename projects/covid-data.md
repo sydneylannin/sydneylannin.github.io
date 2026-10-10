@@ -17,19 +17,24 @@ document: files/Data-Handling-During-a-Pandemic.pdf
 link: Open the presentation | files/Data-Handling-During-a-Pandemic.pdf
 link: View the Miro board | https://miro.com/app/board/uXjVLXEd44Q=/
 ---
-
 ## The question
 
-<mark>What were you trying to understand about how COVID-19 testing data moved from individuals to national databases?</mark>
+When someone took a COVID-19 test, where did that result actually go? Our team set out to trace how testing data moved from a single person to national databases, and to understand why the United States struggled to produce timely, reliable testing data during the pandemic.
 
 ## Approach
 
-<mark>Each team member brought research sources, mapped their social worlds (micro, meso, and macro), and traced a data journey. Then you merged them. Describe your own sources and what your maps showed.</mark>
+Each of us brought research sources to the project, then mapped the "social worlds" involved at three levels: the micro level (patients, local labs, testing centers), the meso level (hospitals, health departments, community organizations), and the macro level (the CDC, policymakers, researchers). We each traced a data journey from our sources, then merged everything into one shared map in Miro.
+
+My sources looked at how centralized COVID-19 databases were built, gaps in national epidemiological data, and how Maryland partnered contact tracing with its health information exchange to manage the flood of testing data.
 
 ## Key friction points
 
-<mark>The biggest breakdowns you found: technological disparities, data standardization and cleansing, and privacy concerns. Pick the one that stood out most to you.</mark>
+- **Technological disparities:** there was no centralized system for collecting testing data, so labs and agencies used different technologies and databases. Formats didn't match, data was hard to combine, and reporting was delayed.
+- **Data standardization and cleansing:** before data could be shared, it had to be anonymized, validated, reformatted, and checked for duplicates. These steps were necessary, but they took significant time and caused a lot of data to be lost along the way.
+- **Privacy concerns:** patients were understandably hesitant about sharing personal health information, which created another barrier to complete data.
+
+The standardization problem stood out to me most. Every handoff was a point where data could be delayed, changed, or dropped, and by the time results reached the national level, decision-makers were working from an incomplete picture.
 
 ## Why it matters
 
-<mark>How this shaped how you think about data quality and reliable systems (a natural link to technology risk).</mark>
+This project changed how I think about data. A number on a dashboard is only as trustworthy as every step it passed through to get there. That idea carried directly into my work in technology risk, where much of the job is understanding how data moves through systems and whether the controls along the way keep it complete and accurate.

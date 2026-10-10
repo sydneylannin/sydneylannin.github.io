@@ -19,20 +19,18 @@ link: Read our design process on Medium | https://medium.com/@syla4617/the-rippl
 
 ## Overview
 
-<mark>What question did your team set out to answer, and who is the story for? (The NPS saw a record 331.9 million recreation visits in 2024, which is a strong hook.)</mark>
+National Parks Services protect some of our most important ecosystems as well as our country’s history, and the sites are major attractions- NPS recorded a record-breaking 331.9 million recreation visits in 2024. Our primary objective was to investigate the impact of visitor attendance at NPS sites on park ecosystems and the effect of visitor spending on the economy.
 
 ## My contribution
 
-<mark>Your Tableau choropleth map: the four economic impact metrics, why a map by state, and the choices you made about color, toggling between metrics, and tooltips.</mark>
+I designed the story's interactive economic impact map in Tableau, one of its six visualizations. The choropleth shows four NPS economic impact metrics by state, and a toggle lets readers switch between them on one map instead of comparing four separate charts. Early versions were hard to read without context: the metrics weren't explained and there was no legend. After testing with people outside our class, I added tooltips, a legend, and annotations so that someone without an economics background could read the map at a glance.
 
 ## Research & design process
 
-<mark>Sketches, then prototypes, then feedback. Pick one or two moments where feedback changed the design (for example, adding tooltips, legends, or annotations for key events).</mark>
+We spent much of our process brainstorming and sketching, exploring different ways to show the impact of visitation through ecological and economic lenses. Once we felt confident in our design plan, we moved to prototyping, then iterated through user feedback and testing. For example, testers asked for annotations marking key events, like the 2020 drop in visitation, which became central to how the story guides readers.” We finalized our designs by grounding them in design principles and incorporating feedback.
 
 ## Findings
 
-<mark>What the data showed about visitation, the economy, and ecosystems (the 2020 drop is a clear example).</mark>
+Our visualizations reveal that visitation rates to the U.S national parks systems has signifigant impact on the economy and parks ecosystems. Visitor spending drives billions of dollars in revenue and jobs, labor income, and overall economic output across states. What we can learn from this is that when the country experiences major events that affect visitation, like a government shutdown or pandemic, our economy feels the shock heavily, especially the thousands of people whos jobs are supported by this income. At the same time, these disruptions can temporarily reduce human weight on park ecosystems, influencing vegetation and wildlife activity.
 
-## Reflection
 
-<mark>What you'd change with more time, such as the limits of grouping parks by region or the data you'd add next.</mark>

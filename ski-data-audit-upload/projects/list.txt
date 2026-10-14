@@ -1,0 +1,11 @@
+# PROJECT LIST
+# One project file name per line (without ".md"), in the order you want
+# the cards to appear. Lines starting with # are ignored, so you can hide
+# a project without deleting it by putting a # in front of its name.
+
+national-parks
+ai-attitudes
+covid-data
+ski-data-audit
+# rent-portal
+# ai-responsibility

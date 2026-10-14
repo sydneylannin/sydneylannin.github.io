@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ski Data Audit · Scorecard</title>
+<!-- Shown on the left side of projects/ski-data-audit.md (the "embed:" line). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fffefb;
+    --card: #fdfcf9;
+    --ink: #2a2a2a;
+    --muted: #6b6b6b;
+    --rule: #e4e0d8;
+    --wash: #f6f4ee;
+    --pass: #3d6b4b;
+    --pass-bg: #edf3ee;
+    --fail: #9b3a2c;
+    --fail-bg: #f8ece9;
+    --hl: #fff4c9;
+    --serif: "Times New Roman", Times, Tinos, "Liberation Serif", serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); }
+  body {
+    color: var(--ink);
+    font-family: var(--serif);
+    line-height: 1.45;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: #f1efe9;
+    padding: 1px 5px;
+  }
+
+  .panel { padding: 28px 28px 26px; }
+  .panel + .panel { border-top: 6px solid var(--wash); }
+  .eyebrow {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .title { margin: 4px 0 2px; font-size: 25px; font-weight: normal; }
+  .meta { margin: 0; font-size: 14px; color: var(--muted); }
+
+  /* ---------- Scorecard ---------- */
+  .tally {
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    margin: 16px 0 4px; padding: 10px 0;
+    border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule);
+    font-size: 15px;
+  }
+  .checks { list-style: none; margin: 0; padding: 0; }
+  .check { padding: 15px 0; border-bottom: 1px solid var(--rule); }
+  .check-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .check-name { margin: 0; font-size: 19px; font-weight: normal; }
+  .num { display: inline-block; min-width: 1.6em; color: var(--muted); font-size: 15px; }
+  .verdict {
+    flex-shrink: 0; padding: 2px 9px;
+    font-size: 12px; font-weight: bold; letter-spacing: 0.12em; text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+  .pass .verdict { color: var(--pass); background: var(--pass-bg); }
+  .fail .verdict { color: var(--fail); background: var(--fail-bg); }
+  .check-body {
+    display: grid; grid-template-columns: 104px 1fr; gap: 4px 16px;
+    margin-top: 8px; padding-left: 1.6em;
+  }
+  .figure { font-size: 23px; line-height: 1.15; }
+  .desc { margin: 0; font-size: 15px; }
+  .foot {
+    grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 16px;
+    margin-top: 4px; font-size: 13px; color: var(--muted);
+  }
+  .verdict-box {
+    margin-top: 18px; padding: 13px 16px;
+    border-left: 3px solid var(--ink); background: var(--wash);
+  }
+  .verdict-box p { margin: 0; font-size: 15px; }
+  .verdict-box p + p { margin-top: 6px; }
+  .q { font-style: italic; color: var(--muted); }
+
+  /* ---------- Ranking comparison ---------- */
+  .ranking { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 15px; }
+  .ranking th {
+    text-align: left; font-weight: normal; vertical-align: bottom;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    padding: 0 8px 8px; border-bottom: 2px solid var(--ink);
+  }
+  .ranking th small { display: block; letter-spacing: 0; text-transform: none; font-size: 13px; font-style: italic; }
+  .ranking td { padding: 7px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .ranking td.rank { width: 2.2em; color: var(--muted); }
+  .ranking .n { float: right; font-variant-numeric: tabular-nums; color: var(--muted); padding-left: 10px; }
+  .ranking .swap { background: var(--hl); font-weight: bold; }
+  .ranking .swap .n { color: var(--ink); }
+  .ranking .split { font-style: italic; }
+  .ranking tr.more td { color: var(--muted); font-style: italic; font-size: 14px; }
+  .ranking tfoot td { border-bottom: 0; border-top: 2px solid var(--ink); font-weight: bold; }
+  .ranking tfoot .n { color: var(--ink); }
+  .legend { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+  .legend .chip { background: var(--hl); padding: 0 5px; color: var(--ink); font-weight: bold; }
+  .takeaways { margin: 12px 0 0; padding-left: 18px; font-size: 15px; }
+  .takeaways li + li { margin-top: 4px; }
+
+  @media (max-width: 520px) {
+    .panel { padding: 20px 14px 18px; }
+    .title { font-size: 22px; }
+    .check-body { grid-template-columns: 1fr; padding-left: 0; }
+    .foot { grid-column: 1; }
+    .ranking { font-size: 14px; }
+    .ranking td, .ranking th { padding-left: 4px; padding-right: 4px; }
+    .ranking .n { float: none; display: block; padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =================== AUDIT SCORECARD =================== -->
+<section class="panel" aria-labelledby="scorecard-title">
+  <p class="eyebrow">Data quality audit</p>
+  <h2 class="title" id="scorecard-title">Audit Scorecard</h2>
+  <p class="meta">Ski_Fields table &middot; 249 rows &middot; 12 resorts &middot; 20 weeks (Nov 2025 &ndash; Apr 2026)</p>
+
+  <div class="tally">
+    <span><strong>2</strong> passed</span>
+    <span><strong>3</strong> failed</span>
+    <span><strong>3 of 3</strong> failures fixed in <code>vCleanSkiFields</code></span>
+  </div>
+
+  <ol class="checks">
+    <li class="check pass">
+      <div class="check-head">
+        <h3 class="check-name"><span class="num">1</span>Completeness</h3>
+        <span class="verdict">&#10003; Pass</span>
+      </div>
+      <div class="check-body">
+        <div class="figure">14 / 249</div>
+        <p class="desc">rows missing snowfall. Every other column is complete, and no resort is missing more than 3 weeks.</p>
+        <div class="foot"><span>Impact: Low</span><span>Fix: kept as <code>NULL</code></span></div>
+      </div>
+    </li>
+
+    <li class="check fail">
+      <div class="check-head">
+        <h3 class="check-name"><span class="num">2</span>Validity</h3>
+        <span class="verdict">&#10005; Fail</span>
+      </div>
+      <div class="check-body">
+        <div class="figure">2 / 10</div>
+        <p class="desc">columns stored as text. Snowfall and Ticket_Price can't be compared or averaged: <code>MAX(Snowfall)</code> returned &ldquo;9 in&rdquo; though 30-inch weeks exist.</p>
+        <div class="foot"><span>Impact: Low</span><span>Fix: <code>CAST(REPLACE(&hellip;))</code></span></div>
+      </div>
+    </li>
+
+    <li class="check fail">
+      <div class="check-head">
+        <h3 class="check-name"><span class="num">3</span>Uniqueness</h3>
+        <span class="verdict">&#10005; Fail</span>
+      </div>
+      <div class="check-body">
+        <div class="figure">9</div>
+        <p class="desc">exact duplicate rows (249 rows, 240 unique records), counting those weeks&rsquo; visitors twice.</p>
+        <div class="foot"><span>Impact: High</span><span>Fix: <code>SELECT DISTINCT</code></span></div>
+      </div>
+    </li>
+
+    <li class="check fail">
+      <div class="check-head">
+        <h3 class="check-name"><span class="num">4</span>Consistency</h3>
+        <span class="verdict">&#10005; Fail</span>
+      </div>
+      <div class="check-body">
+        <div class="figure">26 &rarr; 12</div>
+        <p class="desc">spellings for 12 resorts, splitting each resort&rsquo;s visitor total. Status and visitor counts agree.</p>
+        <div class="foot"><span>Impact: High</span><span>Fix: <code>UPPER(Resort)</code></span></div>
+      </div>
+    </li>
+
+    <li class="check pass">
+      <div class="check-head">
+        <h3 class="check-name"><span class="num">5</span>Reasonableness</h3>
+        <span class="verdict">&#10003; Pass</span>
+      </div>
+      <div class="check-body">
+        <div class="figure">Dec 22&ndash;29</div>
+        <p class="desc">is the season&rsquo;s visitor peak. Weekly totals follow a real ski season: holiday peak, spring break, April drop.</p>
+        <div class="foot"><span>Impact: None</span><span>Fix: not needed</span></div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="verdict-box">
+    <p class="q">Can we trust this data to answer which Colorado resorts drew the most visitors in 2025&ndash;26?</p>
+    <p><strong>Not as-is:</strong> the #3 and #6 resorts swap places once the data is cleaned. <strong>After cleaning:</strong> yes.</p>
+  </div>
+</section>
+
+<!-- =================== RAW vs. CLEANED RANKING =================== -->
+<section class="panel" aria-labelledby="ranking-title">
+  <p class="eyebrow">The payoff</p>
+  <h2 class="title" id="ranking-title">Total visitors, raw vs. cleaned</h2>
+  <p class="meta">Same query, run on <code>Ski_Fields</code> and on <code>vCleanSkiFields</code></p>
+
+  <table class="ranking">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Raw data<small>26 name groups</small></th>
+        <th scope="col">Cleaned data<small>12 resorts</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rank">1</td><td>Vail <span class="n">319,723</span></td><td>VAIL <span class="n">338,437</span></td></tr>
+      <tr><td class="rank">2</td><td>Breckenridge <span class="n">237,509</span></td><td>BRECKENRIDGE <span class="n">316,419</span></td></tr>
+      <tr><td class="rank">3</td><td class="swap">Keystone <span class="n">220,136</span></td><td class="swap">STEAMBOAT <span class="n">246,309</span></td></tr>
+      <tr><td class="rank">4</td><td>Winter Park <span class="n">196,123</span></td><td>ASPEN SNOWMASS <span class="n">241,966</span></td></tr>
+      <tr><td class="rank">5</td><td>Aspen Snowmass <span class="n">194,232</span></td><td>WINTER PARK <span class="n">235,427</span></td></tr>
+      <tr><td class="rank">6</td><td class="swap">Steamboat <span class="n">179,718</span></td><td class="swap">KEYSTONE <span class="n">230,839</span></td></tr>
+      <tr><td class="rank">7</td><td>Copper Mountain <span class="n">156,740</span></td><td>COPPER MOUNTAIN <span class="n">217,644</span></td></tr>
+      <tr><td class="rank">8</td><td>Arapahoe Basin <span class="n">116,878</span></td><td>TELLURIDE <span class="n">142,266</span></td></tr>
+      <tr><td class="rank">9</td><td>Telluride <span class="n">110,265</span></td><td>ARAPAHOE BASIN <span class="n">127,587</span></td></tr>
+      <tr><td class="rank">10</td><td class="split">breckenridge <span class="n">93,170</span></td><td>CRESTED BUTTE <span class="n">114,716</span></td></tr>
+      <tr><td class="rank">11</td><td>Purgatory <span class="n">77,325</span></td><td>LOVELAND <span class="n">107,488</span></td></tr>
+      <tr><td class="rank">12</td><td>Crested Butte <span class="n">72,151</span></td><td>PURGATORY <span class="n">94,606</span></td></tr>
+      <tr class="more"><td class="rank"></td><td>+ 14 more spellings</td><td></td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td></td><td>All visitors <span class="n">2,498,544</span></td><td>All visitors <span class="n">2,413,704</span></td></tr>
+    </tfoot>
+  </table>
+
+  <p class="legend"><span class="chip">Highlighted</span> resorts swap places after cleaning.</p>
+  <ul class="takeaways">
+    <li><strong>Name splits made each resort&rsquo;s total too low:</strong> lowercase &ldquo;breckenridge&rdquo; alone holds 93,170 visitors.</li>
+    <li><strong>Duplicates made the overall total too high:</strong> by 84,840 visitors.</li>
+  </ul>
+</section>
+
+</body>
+</html>

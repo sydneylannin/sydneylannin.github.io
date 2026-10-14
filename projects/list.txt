@@ -6,5 +6,6 @@
 national-parks
 ai-attitudes
 covid-data
+ski-data-audit
 # rent-portal
 # ai-responsibility

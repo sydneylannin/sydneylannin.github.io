@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telco Churn · Visual Summary</title>
+<!-- Shown on the left side of projects/telco-churn.md (the "embed:" line).
+     Charts live in images/projects/telco-churn/ and were made from the same
+     data and steps as the Colab notebook. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fffefb;
+    --ink: #2a2a2a;
+    --muted: #6b6b6b;
+    --rule: #e4e0d8;
+    --wash: #f6f4ee;
+    --accent: #4d6f8f;
+    --risk: #a8401a;
+    --serif: "Times New Roman", Times, Tinos, "Liberation Serif", serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); }
+  body { color: var(--ink); font-family: var(--serif); line-height: 1.45; -webkit-font-smoothing: antialiased; }
+
+  .panel { padding: 28px 28px 26px; }
+  .panel + .panel { border-top: 6px solid var(--wash); }
+  .eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .title { margin: 4px 0 2px; font-size: 25px; font-weight: normal; }
+  .meta { margin: 0; font-size: 14px; color: var(--muted); }
+
+  figure { margin: 20px 0 0; }
+  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--rule); }
+  figcaption { margin-top: 7px; font-size: 14px; color: var(--muted); }
+  figure.narrow { max-width: 440px; }
+
+  .tally {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin: 18px 0 4px; padding: 12px 0;
+    border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule);
+  }
+  .stat .num { display: block; font-size: 30px; line-height: 1.1; }
+  .stat .lbl { display: block; font-size: 14px; color: var(--muted); }
+  .stat .vs { font-size: 13px; color: var(--muted); font-style: italic; }
+
+  .note {
+    margin-top: 18px; padding: 12px 16px;
+    border-left: 3px solid var(--ink); background: var(--wash); font-size: 15px;
+  }
+  .note p { margin: 0; }
+  .note p + p { margin-top: 6px; }
+
+  .hyp { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; }
+  .hyp th {
+    text-align: left; font-weight: normal; font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); padding: 0 8px 7px; border-bottom: 2px solid var(--ink);
+  }
+  .hyp td { padding: 7px 8px; border-bottom: 1px solid var(--rule); }
+  .hyp .yes { color: var(--accent); font-weight: bold; }
+  .hyp .no { color: var(--risk); font-weight: bold; }
+
+  @media (max-width: 520px) {
+    .panel { padding: 20px 14px 18px; }
+    .title { font-size: 22px; }
+    .tally { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =================== 1. THE PROBLEM AND THE DATA =================== -->
+<section class="panel" aria-labelledby="p1">
+  <p class="eyebrow">1 &middot; The problem and the data</p>
+  <h2 class="title" id="p1">Who is about to leave?</h2>
+  <p class="meta">IBM Telco Customer Churn &middot; 7,043 customers &middot; 21 columns &middot; one row per customer</p>
+
+  <figure>
+    <img src="../images/projects/telco-churn/class-balance.png" alt="Bar chart: 5,174 customers stayed (73%) and 1,869 churned (27%).">
+    <figcaption>The baseline to beat: a model that always guesses &ldquo;stayed&rdquo; is already 73% accurate.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="../images/projects/telco-churn/histograms.png" alt="Histograms of tenure and monthly charge. Tenure has spikes at 0 to 3 months and 68 to 72 months. Monthly charge has a large spike around 20 dollars and a broad hump from 70 to 105 dollars.">
+    <figcaption>No impossible values, so every row was kept. The $20 spike is phone-only customers.</figcaption>
+  </figure>
+</section>
+
+<!-- =================== 2. EXPLORING AND PREPARING =================== -->
+<section class="panel" aria-labelledby="p2">
+  <p class="eyebrow">2 &middot; Exploring and preparing the data</p>
+  <h2 class="title" id="p2">Cleaning, encoding, and looking for patterns</h2>
+  <p class="meta">Filled 11 blanks &middot; encoded 16 text columns &middot; dropped 1 redundant column</p>
+
+  <div class="note">
+    <p><strong>The 11 &ldquo;missing&rdquo; values weren&rsquo;t errors.</strong> Every blank TotalCharges belonged to a customer with 0 months of tenure: they simply hadn&rsquo;t been billed yet, so the blanks were filled with $0.</p>
+  </div>
+
+  <figure>
+    <img src="../images/projects/telco-churn/churn-correlation.png" alt="Horizontal bar chart of each column's correlation with churn. Contract (-0.40) and tenure (-0.35) are most linked to staying; fiber optic internet (+0.31) and electronic check payment (+0.30) are most linked to leaving.">
+    <figcaption>From the correlation heatmap. TotalCharges was dropped: it correlates 0.83 with tenure.</figcaption>
+  </figure>
+
+  <figure class="narrow">
+      <img src="../images/projects/telco-churn/silhouette.png" alt="Line chart of silhouette score for 2 to 9 clusters, peaking at 4 clusters with a score of 0.48.">
+      <figcaption>Silhouette and elbow both pointed to 4 clusters.</figcaption>
+  </figure>
+  <figure>
+      <img src="../images/projects/telco-churn/clusters.png" alt="Scatter plot of tenure against monthly charge split into four segments: new premium (2,215), long-term premium (1,952), new budget (1,722), long-term budget (1,154).">
+      <figcaption>Clustered without using Churn, on scaled tenure and monthly charge.</figcaption>
+  </figure>
+</section>
+
+<!-- =================== 3. THE MODEL AND WHAT IT FOUND =================== -->
+<section class="panel" aria-labelledby="p3">
+  <p class="eyebrow">3 &middot; The model and what it found</p>
+  <h2 class="title" id="p3">Random Forest classifier</h2>
+  <p class="meta">80/20 stratified split &middot; 100 trees &middot; tested on 1,409 unseen customers</p>
+
+  <div class="tally">
+    <div class="stat"><span class="num">78%</span><span class="lbl">accuracy</span><span class="vs">vs. 73% baseline</span></div>
+    <div class="stat"><span class="num">49%</span><span class="lbl">of churners caught</span><span class="vs">184 of 374</span></div>
+    <div class="stat"><span class="num">61%</span><span class="lbl">of flags were right</span><span class="vs">184 of 300 flagged</span></div>
+  </div>
+
+  <figure class="narrow">
+    <img src="../images/projects/telco-churn/confusion-matrix.png" alt="Confusion matrix: 919 correctly predicted stayed, 116 false alarms, 190 missed churners, 184 caught churners.">
+    <figcaption>The model leans toward &ldquo;stayed&rdquo;: it misses about half of the customers who actually leave.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="../images/projects/telco-churn/feature-importance.png" alt="Feature importance bar chart. Tenure (0.23), monthly charges (0.23), and contract (0.08) lead; all other features are below 0.04.">
+    <figcaption>What the model relied on most.</figcaption>
+  </figure>
+
+  <table class="hyp">
+    <thead><tr><th>My hypothesis</th><th>Feature importance rank</th></tr></thead>
+    <tbody>
+      <tr><td>Tenure</td><td class="yes">#1 &#10003;</td></tr>
+      <tr><td>Monthly charges</td><td class="yes">#2 &#10003;</td></tr>
+      <tr><td>Senior citizen</td><td class="no">#11 &#10007;</td></tr>
+      <tr><td><em>Contract</em> (not predicted)</td><td>#3</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>

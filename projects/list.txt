@@ -7,5 +7,6 @@ national-parks
 ai-attitudes
 covid-data
 ski-data-audit
+telco-churn
 # rent-portal
 # ai-responsibility
